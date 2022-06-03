@@ -36,6 +36,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.THE_NAME_OF_YOUR_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+     # install and configure tutor and kubectl
+      - name: Initialize environment
+        uses: openedx-actions/tutor-k8s-init@v0.0.1
+        with:
+          namespace: openedx-prod
+
       # This action.
       - name: Fetch JWT token
         uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.1
