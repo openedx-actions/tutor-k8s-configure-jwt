@@ -44,5 +44,5 @@ jobs:
 
       # This action.
       - name: Fetch JWT token
-        uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.4
+        uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.5
 ```
