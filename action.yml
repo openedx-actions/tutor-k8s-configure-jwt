@@ -13,17 +13,19 @@ runs:
   steps:
       # retrieve the Open edX JWT token that we created with Terraform and
       # then stored in Kubernetes secrets
-      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
-      - name: Fetch JWT token from k8s secrets
-        shell: bash
-        run: |-
-          kubectl get secret jwt -n ${{ inputs.namespace }} -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
+    - name: Fetch JWT token from k8s secrets
+      id: get-secret
+      uses: openedx-actions/tutor-k8s-get-secret@v0.0.2
+      with:
+        eks-namespace: ${{ inputs.namespace }}
+        eks-secret-name: jwt
 
-      - name: Generate JWT private key
-        shell: bash
-        run:  |-
-          export TUTOR_JWT_RSA_PRIVATE_KEY=\'$(sed -E 's/$/\n/g' ./jwt_private_key)\'
+    - name: Generate JWT private key
+      id: generate-jwt-private-key
+      shell: bash
+      run:  export TUTOR_JWT_RSA_PRIVATE_KEY=\'$(sed -E 's/$/\n/g' ./jwt_private_key)\'
 
-      - name: tutor config
-        shell: bash
-        run: tutor config save
+    - name: tutor config
+      id: save-config
+      shell: bash
+      run: tutor config save
